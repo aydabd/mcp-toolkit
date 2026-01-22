@@ -1,0 +1,25 @@
+# Build
+bin/
+*.exe
+coverage.out
+coverage.html
+
+# Secrets
+*.env
+!*.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Go
+vendor/
+
+# Build cache
+.tmp/
+reports/

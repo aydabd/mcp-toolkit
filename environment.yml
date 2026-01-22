@@ -1,0 +1,9 @@
+name: mcp-toolkit
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - go=1.25.*
+  - pre-commit
+  - shellcheck
+  - coreutils
