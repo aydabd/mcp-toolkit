@@ -1,0 +1,75 @@
+---
+# Super-Linter workflow template for generated repositories
+# Configuration is loaded from .super-linter.env file
+name: Super-Linter
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  statuses: write
+
+jobs:
+  lint-and-format:
+    name: Lint and Auto-format Code
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Git Config
+        if: github.event_name == 'pull_request'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Load Super-Linter Config
+        run: |
+          # Use grep inverse matching to exclude eventual comments in the .env file
+          # because the GitHub Actions command to set environment variables doesn't support comments.
+          grep -v '^#' .super-linter.env | grep -v '^$' >> "$GITHUB_ENV"
+
+      - name: Checkout PR Branch
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch origin ${{ github.head_ref }}
+          git checkout ${{ github.head_ref }}
+
+      - name: Run Super-Linter (Auto-fix)
+        if: github.event_name == 'pull_request'
+        uses: super-linter/super-linter/slim@v8.2.1
+        env:
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_ALL_CODEBASE: false
+
+      - name: Commit Auto-fixes
+        if: github.event_name == 'pull_request'
+        run: |
+          if [[ -n $(git status -s) ]]; then
+            git add -A
+            git commit -m "chore: auto-fix linting issues [skip ci]" || echo "No changes to commit"
+            git push origin ${{ github.head_ref }}
+          else
+            echo "No changes to commit"
+          fi
+
+      - name: Run Super-Linter (Check Only)
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        uses: super-linter/super-linter/slim@v8.2.1
+        env:
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_ALL_CODEBASE: ${{ github.event_name == 'workflow_dispatch' }}
