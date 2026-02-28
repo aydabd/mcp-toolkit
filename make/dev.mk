@@ -28,5 +28,5 @@ update: ## Update all dependencies (micromamba + Go)
 	$(MAMBA_RUN) go mod tidy
 	@echo "✓ All dependencies updated"
 
-ci: ensure-env lint test-cover ## Run complete CI pipeline
+ci: ensure-env lint-check ## Run complete CI pipeline (uses pre-commit in check mode)
 	@echo "✓ CI passed"

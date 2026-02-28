@@ -9,6 +9,7 @@ import (
 // Editor represents a supported editor/IDE.
 type Editor string
 
+// Editor constants for supported code editors.
 const (
 	VSCode   Editor = "vscode"
 	Cursor   Editor = "cursor"

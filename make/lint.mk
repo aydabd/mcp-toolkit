@@ -2,15 +2,26 @@
 # MCP Toolkit - Lint Targets
 # =============================================================================
 
-.PHONY: lint fmt vet tidy
+.PHONY: lint lint-check fmt vet tidy
 
-lint: ensure-env fmt vet tidy ## Run all linters
+lint: ensure-env ## Run all linters (fix mode)
+	$(MAMBA_RUN) bash -c '\
+		export PATH="$$(go env GOPATH)/bin:$$PATH" && \
+		pre-commit run --all-files \
+	'
 	@echo "✓ Lint complete"
+
+lint-check: ensure-env ## Run linters in check mode (CI)
+	$(MAMBA_RUN) bash -c '\
+		export PATH="$$(go env GOPATH)/bin:$$PATH" && \
+		export LINT_MODE=check && \
+		pre-commit run --all-files \
+	'
+	@echo "✓ Lint check complete"
 
 fmt: ensure-env ## Format Go code
 	$(MAMBA_RUN) gofmt -w .
 	@if command -v goimports >/dev/null 2>&1; then \
-		$(MAMBA_RUN) go install golang.org/x/tools/cmd/goimports@latest 2>/dev/null || true; \
 		$(MAMBA_RUN) goimports -w . 2>/dev/null || true; \
 	fi
 	@echo "✓ Formatted"

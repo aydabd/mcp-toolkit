@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestEnvCommand(t *testing.T) {
@@ -18,19 +19,23 @@ func TestEnvCommand(t *testing.T) {
 }
 
 func TestShowEnvVars(t *testing.T) {
+	t.Helper()
 	// Just verify it doesn't panic
 	showEnvVars()
 }
 
 func TestShowEnvVarsWithValues(t *testing.T) {
+	t.Helper()
 	// Set some env vars to test different branches
-	os.Setenv("MCP_ATLASSIAN_URL", "https://test.atlassian.net")
-	os.Setenv("MCP_ATLASSIAN_API_TOKEN", "secret-token")
+	require.NoError(t, os.Setenv("MCP_ATLASSIAN_URL", "https://test.atlassian.net"))
+	require.NoError(t, os.Setenv("MCP_ATLASSIAN_API_TOKEN", "secret-token"))
 	// Set to default value to cover the "default" branch
-	os.Setenv("MCP_VAULT_BINARY", "/usr/local/bin/vault-mcp-server")
-	defer os.Unsetenv("MCP_ATLASSIAN_URL")
-	defer os.Unsetenv("MCP_ATLASSIAN_API_TOKEN")
-	defer os.Unsetenv("MCP_VAULT_BINARY")
+	require.NoError(t, os.Setenv("MCP_VAULT_BINARY", "/usr/local/bin/vault-mcp-server"))
+	t.Cleanup(func() {
+		_ = os.Unsetenv("MCP_ATLASSIAN_URL")
+		_ = os.Unsetenv("MCP_ATLASSIAN_API_TOKEN")
+		_ = os.Unsetenv("MCP_VAULT_BINARY")
+	})
 
 	// Should cover the secret masking and value display branches
 	showEnvVars()

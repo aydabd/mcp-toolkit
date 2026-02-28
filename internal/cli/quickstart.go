@@ -28,7 +28,7 @@ func init() {
 	quickstartCmd.Flags().BoolVar(&allServers, "all", false, "configure all servers")
 }
 
-func runQuickstart(cmd *cobra.Command, args []string) error { //nolint:gocyclo // orchestration function
+func runQuickstart(cmd *cobra.Command, _ []string) error { //nolint:gocyclo // orchestration function
 	printBanner()
 
 	runtime, err := container.NewRuntime()

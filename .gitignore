@@ -1,4 +1,5 @@
 # Build
+build/
 bin/
 *.exe
 coverage.out

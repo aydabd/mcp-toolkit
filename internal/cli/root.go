@@ -24,7 +24,7 @@ var rootCmd = &cobra.Command{
 	Long: `MCP Toolkit automates setup of Model Context Protocol servers for VS Code.
 
 ` + envvar.FormatHelp(),
-	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+	PersistentPreRun: func(_ *cobra.Command, _ []string) {
 		initLogger()
 	},
 }

@@ -44,7 +44,7 @@ func GenerateMCPJSONForEditor(e editor.Editor, serverConfigs map[string]any) err
 
 // GenerateMCPJSONToPath creates or updates mcp.json at a specific path.
 func GenerateMCPJSONToPath(path string, serverConfigs map[string]any) error {
-	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(path), 0750); err != nil { //nolint:gosec // editor config dir
 		return fmt.Errorf("create config dir: %w", err)
 	}
 
@@ -101,7 +101,7 @@ func GenerateMCPJSONToPath(path string, serverConfigs map[string]any) error {
 	if err != nil {
 		return fmt.Errorf("marshal: %w", err)
 	}
-	return os.WriteFile(path, data, 0644)
+	return os.WriteFile(path, data, 0600) //nolint:gosec // mcp.json needs user read for editor
 }
 
 // GenerateMCPJSONForEditors creates or updates mcp.json for multiple editors.

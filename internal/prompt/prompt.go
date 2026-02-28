@@ -32,14 +32,14 @@ func Reset() {
 
 // String prompts for a string value.
 func String(label string) string {
-	fmt.Fprintf(output, "%s: ", label)
-	input, _ := reader.ReadString('\n')
-	return strings.TrimSpace(input)
+	_, _ = fmt.Fprintf(output, "%s: ", label)
+	text, _ := reader.ReadString('\n')
+	return strings.TrimSpace(text)
 }
 
 // Default prompts with a default value.
 func Default(label, defaultVal string) string {
-	fmt.Fprintf(output, "%s [%s]: ", label, defaultVal)
+	_, _ = fmt.Fprintf(output, "%s [%s]: ", label, defaultVal)
 	input, _ := reader.ReadString('\n')
 	input = strings.TrimSpace(input)
 	if input == "" {
@@ -50,14 +50,14 @@ func Default(label, defaultVal string) string {
 
 // Secret prompts for sensitive input (shows input on terminal, no masking for compatibility).
 func Secret(label string) string {
-	fmt.Fprintf(output, "%s: ", label)
+	_, _ = fmt.Fprintf(output, "%s: ", label)
 	input, _ := reader.ReadString('\n')
 	return strings.TrimSpace(input)
 }
 
 // Confirm prompts for yes/no confirmation (default: no).
 func Confirm(label string) bool {
-	fmt.Fprintf(output, "%s [y/N]: ", label)
+	_, _ = fmt.Fprintf(output, "%s [y/N]: ", label)
 	input, _ := reader.ReadString('\n')
 	input = strings.TrimSpace(strings.ToLower(input))
 	return input == "y" || input == "yes"
@@ -69,7 +69,7 @@ func ConfirmDefault(label string, defaultYes bool) bool {
 	if defaultYes {
 		prompt = "[Y/n]"
 	}
-	fmt.Fprintf(output, "%s %s: ", label, prompt)
+	_, _ = fmt.Fprintf(output, "%s %s: ", label, prompt)
 	input, _ := reader.ReadString('\n')
 	input = strings.TrimSpace(strings.ToLower(input))
 	if input == "" {

@@ -83,8 +83,7 @@ ensure-env:
 		touch $(ENV_MARKER); \
 	elif [ ! -f $(ENV_MARKER) ] || [ $(MAMBA_SPEC) -nt $(ENV_MARKER) ]; then \
 		echo "🔄 Updating micromamba environment '$(MAMBA_ENV)'..."; \
-		micromamba update -y -n $(MAMBA_ENV) -f $(MAMBA_SPEC) 2>/dev/null || \
-		micromamba install -y -n $(MAMBA_ENV) -f $(MAMBA_SPEC); \
+		micromamba env update -n $(MAMBA_ENV) -f $(MAMBA_SPEC); \
 		touch $(ENV_MARKER); \
 	fi
 
@@ -100,8 +99,7 @@ setup-env: ## Create/update micromamba environment
 		micromamba create -y -f $(MAMBA_SPEC); \
 	else \
 		echo "🔄 Updating micromamba environment '$(MAMBA_ENV)'..."; \
-		micromamba update -y -n $(MAMBA_ENV) -f $(MAMBA_SPEC) 2>/dev/null || \
-		micromamba install -y -n $(MAMBA_ENV) -f $(MAMBA_SPEC); \
+		micromamba env update -n $(MAMBA_ENV) -f $(MAMBA_SPEC); \
 	fi
 	@touch $(ENV_MARKER)
 	@echo "✓ Environment '$(MAMBA_ENV)' ready"

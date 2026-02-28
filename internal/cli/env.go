@@ -15,7 +15,7 @@ var envCmd = &cobra.Command{
 	Use:   "env",
 	Short: "Show environment variables",
 	Long:  "Display all environment variables used by mcp-toolkit with their current values.",
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		showEnvVars()
 	},
 }
