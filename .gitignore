@@ -1,48 +1,26 @@
-# OS files
+# Build
+build/
+bin/
+*.exe
+coverage.out
+coverage.html
+
+# Secrets
+*.env
+!*.env.example
+
+# OS
 .DS_Store
 Thumbs.db
-*.swp
-*.swo
-*~
 
-# IDE and editor files
+# Editor
 .vscode/
 .idea/
-*.iml
-*.sublime-*
+*.swp
 
-# Build artifacts
-/build/
-/dist/
-/out/
-/target/
-*.exe
-*.dll
-*.so
-*.dylib
+# Go
+vendor/
 
-# Dependencies
-/node_modules/
-/vendor/
-
-# Environment and secrets
-.env
-.env.local
-*.key
-*.pem
-secrets/
-
-# Logs
-*.log
-logs/
-
-# Coverage and test reports
-/coverage/
-*.cover
-.coverage
-htmlcov/
-
-# Temporary files
-*.tmp
-*.temp
-.cache/
+# Build cache
+.tmp/
+reports/

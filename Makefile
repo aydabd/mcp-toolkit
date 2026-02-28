@@ -1,75 +1,51 @@
-.PHONY: help install lint lint-fix test coverage clean
+# =============================================================================
+# MCP Toolkit - Main Makefile
+# =============================================================================
+# Entry point that includes all modular makefiles.
+#
+# Structure:
+#   make/common.mk  - Shared variables and environment setup
+#   make/build.mk   - Build and install targets
+#   make/test.mk    - Unit tests and coverage
+#   make/lint.mk    - Code formatting and linting
+#   make/dev.mk     - Development workflow targets
+#
+# Usage:
+#   make help       - Show all available commands
+#   make ci         - Run complete CI pipeline
+#   make quickstart - Run interactive MCP setup
+# =============================================================================
 
-# Default target
-help:
-	@echo "Available targets:"
-	@echo "  make install    - Install dependencies"
-	@echo "  make lint       - Run super-linter locally (check only)"
-	@echo "  make lint-fix   - Run super-linter locally with auto-fix"
-	@echo "  make test       - Run tests"
-	@echo "  make coverage   - Run tests with coverage"
-	@echo "  make clean      - Clean build artifacts"
+include make/common.mk
+include make/build.mk
+include make/test.mk
+include make/lint.mk
+include make/dev.mk
 
-# Install dependencies (customize based on your language)
-install:
-	@echo "Installing dependencies..."
-	@echo "Note: Update this target based on your project's language and package manager"
-	# Example for Node.js: npm install
-	# Example for Python: pip install -r requirements.txt
-	# Example for Go: go mod download
-	# Example for Ruby: bundle install
+# =============================================================================
+# Help Target
+# =============================================================================
 
-# Run super-linter locally (check only mode)
-lint:
-	@echo "Running super-linter in check mode..."
-	@docker pull github/super-linter:latest
-	@docker run \
-		--rm \
-		-e RUN_LOCAL=true \
-		-e DEFAULT_BRANCH=main \
-		-e VALIDATE_ALL_CODEBASE=true \
-		-e FIX_MODE=false \
-		-e LOG_LEVEL=NOTICE \
-		--env-file .super-linter.env \
-		-v $(PWD):/tmp/lint \
-		github/super-linter:latest
-
-# Run super-linter locally with auto-fix
-lint-fix:
-	@echo "Running super-linter in fix mode..."
-	@docker pull github/super-linter:latest
-	@docker run \
-		--rm \
-		-e RUN_LOCAL=true \
-		-e DEFAULT_BRANCH=main \
-		-e VALIDATE_ALL_CODEBASE=true \
-		-e FIX_MODE=true \
-		-e LOG_LEVEL=NOTICE \
-		--env-file .super-linter.env \
-		-v $(PWD):/tmp/lint \
-		github/super-linter:latest
-	@echo "Auto-fixes applied. Review changes with 'git diff'"
-
-# Run tests (customize based on your language)
-test:
-	@echo "Running tests..."
-	@echo "Note: Update this target based on your project's testing framework"
-	# Example for Node.js: npm test
-	# Example for Python: pytest
-	# Example for Go: go test ./...
-	# Example for Ruby: bundle exec rspec
-
-# Run tests with coverage (customize based on your language)
-coverage:
-	@echo "Running tests with coverage..."
-	@echo "Note: Update this target based on your project's testing framework"
-	# Example for Node.js: npm run coverage
-	# Example for Python: pytest --cov
-	# Example for Go: go test -cover ./...
-	# Example for Ruby: bundle exec rspec --coverage
-
-# Clean build artifacts (customize based on your language)
-clean:
-	@echo "Cleaning build artifacts..."
-	@echo "Note: Update this target based on your project's build output"
-	# Example: rm -rf node_modules dist build *.pyc __pycache__ .coverage
+.PHONY: help
+help: ## Show available commands
+	@echo "MCP Toolkit - Available Commands"
+	@echo ""
+	@echo "Environment:"
+	@grep -hE '^[a-zA-Z0-9_-]+:.*?## .*$$' make/common.mk | \
+		awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'
+	@echo ""
+	@echo "Build:"
+	@grep -hE '^[a-zA-Z0-9_-]+:.*?## .*$$' make/build.mk | \
+		awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'
+	@echo ""
+	@echo "Test:"
+	@grep -hE '^[a-zA-Z0-9_-]+:.*?## .*$$' make/test.mk | \
+		awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'
+	@echo ""
+	@echo "Lint:"
+	@grep -hE '^[a-zA-Z0-9_-]+:.*?## .*$$' make/lint.mk | \
+		awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'
+	@echo ""
+	@echo "Dev:"
+	@grep -hE '^[a-zA-Z0-9_-]+:.*?## .*$$' make/dev.mk | \
+		awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

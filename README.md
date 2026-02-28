@@ -1,91 +1,108 @@
-# mcp-toolkit
+# MCP Toolkit
 
-[![Super-Linter](https://github.com/aydabd/mcp-toolkit/actions/workflows/super-linter.yml/badge.svg)](https://github.com/aydabd/mcp-toolkit/actions/workflows/super-linter.yml)
+CLI tool to configure MCP (Model Context Protocol) servers for VS Code, Cursor, Windsurf, and Zed editors.
 
-## Overview
+## Quick Start
 
-Brief project description following SOLID principles, TDD, and DDD architecture patterns.
+```bash
+make build && ./bin/mcp-toolkit quickstart
+```
 
-## Architecture
+## Requirements
 
-This project follows:
+- Go 1.23+
+- Container runtime (optional): Docker, Podman, or Rancher Desktop
+- micromamba (for development)
 
-- **SOLID principles** for maintainable code
-- **Test-Driven Development** (TDD) for reliability
-- **Domain-Driven Design** (DDD) for clear business logic
-- **Type-safe** implementation
-- **Dependency injection** for testability
+## Installation
+
+```bash
+make build          # Build for current platform
+make build-all      # Build for all platforms
+make install        # Install to GOPATH/bin
+```
+
+## Usage
+
+```bash
+mcp-toolkit quickstart           # Interactive setup for all servers
+mcp-toolkit quickstart --all     # Configure all servers without prompts
+mcp-toolkit setup atlassian      # Setup specific server
+mcp-toolkit env                  # Show environment variables
+mcp-toolkit version              # Show version
+```
+
+## Supported Servers
+
+| Server     | Container      | Description                   |
+| ---------- | -------------- | ----------------------------- |
+| atlassian  | mcp/atlassian  | Jira & Confluence integration |
+| kubernetes | mcp/kubernetes | K8s cluster management        |
+| vault      | local binary   | HashiCorp Vault secrets       |
+| github     | -              | GitHub Copilot (built-in)     |
+| supabase   | -              | Supabase database (hosted)    |
+
+## Supported Editors
+
+| Editor   | Config Location                                                |
+| -------- | -------------------------------------------------------------- |
+| VS Code  | `~/Library/Application Support/Code/User/mcp.json` (macOS)     |
+| Cursor   | `~/Library/Application Support/Cursor/User/mcp.json` (macOS)   |
+| Windsurf | `~/Library/Application Support/Windsurf/User/mcp.json` (macOS) |
+| Zed      | `~/.config/zed/settings.json`                                  |
 
 ## Development
 
-### Prerequisites
-
-List required tools and versions here.
-
-### Setup
-
 ```bash
-git clone <repository-url>
-cd <repository-name>
+# Setup environment
+micromamba create -f environment.yml
+micromamba activate mcp-toolkit
 
-# Install dependencies
-make install
+# Development commands
+make lint           # Format and vet code
+make test           # Run unit tests
+make test-cover     # Run tests with coverage
+make coverage-check # Verify 90% coverage threshold
+make ci             # Full CI pipeline
+make pre-commit     # Run pre-commit hooks
 ```
 
-### Running Tests
+## Project Structure
 
-```bash
-# Run all tests
-make test
-
-# Run with coverage
-make coverage
+```text
+cmd/mcp-toolkit/     # CLI entry point
+internal/
+  cli/               # Cobra commands (quickstart, setup, env, version)
+  config/            # Paths and mcp.json generation
+  container/         # Docker/Podman/Rancher runtime detection
+  editor/            # Multi-editor support with OS-specific paths
+  envvar/            # Environment variable management
+  prompt/            # Interactive terminal input
+  setup/             # Server configuration writers
+make/                # Modular Makefile includes
+test/e2e/            # End-to-end tests
 ```
 
-### Linting
+## Configuration
+
+| Type          | Location                                      |
+| ------------- | --------------------------------------------- |
+| Credentials   | `~/.mcp-server-envs/*.env` (0700 permissions) |
+| Editor config | OS and editor-specific `mcp.json`             |
+
+## Environment Variables
+
+All configuration can be set via environment variables with `MCP_` prefix:
 
 ```bash
-# Run super-linter locally (check only)
-make lint
-
-# Run super-linter with autofix
-make lint-fix
+MCP_ATLASSIAN_URL=https://company.atlassian.net
+MCP_ATLASSIAN_EMAIL=user@example.com
+MCP_ATLASSIAN_API_TOKEN=secret
+MCP_VAULT_ADDRESS=https://vault.example.com
 ```
 
-The repository includes GitHub Super-Linter for consistent code quality:
-
-- **Automatic formatting** on pull requests
-- **Language-agnostic linting** for Markdown, YAML, JSON, XML, and EditorConfig
-- **Programming language validation** configured in `.super-linter.env`
-- **Local linting** with Docker via `make lint` commands
-
-## Code Standards
-
-- **Indentation**: 4 spaces (code), 2 spaces (YAML/JSON)
-- **Linting**: Enforced via pre-commit hooks
-- **Formatting**: Autoformat before commit
-- **Type safety**: Strictly enforced
-- **No trailing whitespace**
-
-## Contributing
-
-1. Create feature branch from `main`
-2. Write tests first (TDD)
-3. Implement feature
-4. Ensure all tests pass
-5. Run linter and formatter
-6. Submit PR (requires 2 approvals)
-
-See CONTRIBUTING.md and CODEOWNERS for details.
-
-## Testing Philosophy
-
-- All code must be testable
-- Unit tests for all modules
-- Integration tests for components
-- Test fixtures separated by module
-- Minimum 80% coverage
+Run `mcp-toolkit env` to see all available variables.
 
 ## License
 
-See LICENSE file for details.
+MIT
